@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Security Alert!</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        #terminal {
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            border: 1px solid #0f0;
+            background: rgba(0, 20, 0, 0.9);
+            box-shadow: 0 0 20px #0f0;
+        }
+        .error { color: #f00; font-weight: bold; }
+        .warning { color: #ff0; }
+        .hidden { display: none; }
+        #final-message {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 0 10px #f0f, 0 0 20px #f0f;
+            animation: blink 0.5s infinite alternate;
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.3; }
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #333;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 20px;
+            background-color: #0f0;
+            width: 0%;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div id="logs"></div>
+        <div id="progress-container" class="hidden">
+            <p class="warning">DELETING SYSTEM FILES... PLEASE DO NOT TURN OFF YOUR COMPUTER</p>
+            <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
+        </div>
+        <div id="final-message" class="hidden">
+            🤡 APRIL FOOL! 🤡
+            <p style="font-size: 1.2rem;">Aapka dost aapko ullu bana raha hai!</p>
+            <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; background: #0f0; border: none; font-weight: bold;">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const logs = [
+            "Connecting to server...",
+            "Accessing root directory...",
+            "CRITICAL ERROR: Unauthorized access detected!",
+            "Attempting to bypass firewall...",
+            "Firewall bypassed successfully.",
+            "Downloading 'Trojan.Win32.Joke'...",
+            "Infecting System32...",
+            "Deleting C:/Users/Documents...",
+            "Deleting C:/Windows/System32/drivers...",
+            "Encrypting personal photos...",
+            "Sending data to remote server: 192.168.1.105..."
+        ];
+
+        const logContainer = document.getElementById('logs');
+        const progressContainer = document.getElementById('progress-container');
+        const finalMessage = document.getElementById('final-message');
+        const fill = document.getElementById('fill');
+
+        let index = 0;
+
+        function addLog() {
+            if (index < logs.length) {
+                const p = document.createElement('p');
+                if (logs[index].includes('ERROR') || logs[index].includes('Deleting')) {
+                    p.className = 'error';
+                }
+                p.textContent = "> " + logs[index];
+                logContainer.appendChild(p);
+                index++;
+                setTimeout(addLog, 800);
+            } else {
+                startProgress();
+            }
+        }
+
+        function startProgress() {
+            progressContainer.classList.remove('hidden');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    showFinal();
+                } else {
+                    width += 2;
+                    fill.style.width = width + '%';
+                }
+            }, 100);
+        }
+
+        function showFinal() {
+            logContainer.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            finalMessage.classList.remove('hidden');
+            document.body.style.backgroundColor = "#6200ea";
+        }
+
+        // Start the prank
+        setTimeout(addLog, 1000);
+    </script>
+</body>
+</html>
