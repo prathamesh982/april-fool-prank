@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRITICAL SYSTEM ERROR</title>
+    <title>CRITICAL SYSTEM ERROR - DO NOT TURN OFF</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #001a4d 0%, #003366 50%, #001a4d 100%);
+            background: #0000AA;
             font-family: 'Courier New', monospace;
             overflow: hidden;
             height: 100vh;
@@ -33,19 +33,25 @@
             font-size: 16px;
             line-height: 1.8;
             text-shadow: 0 0 5px rgba(255, 255, 85, 0.5);
-            animation: flicker 0.15s infinite;
+            animation: flicker 0.1s infinite;
         }
         
         @keyframes flicker {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.95; }
+            50% { opacity: 0.8; }
         }
         
         .header {
             text-align: center;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 24px;
             margin-bottom: 30px;
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
         
         .content {
@@ -53,27 +59,35 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow-y: auto;
+            max-height: 400px;
         }
         
         .error-message {
             margin-bottom: 20px;
-            animation: typewriter 0.05s steps(1);
-        }
-        
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
+            font-weight: bold;
+            color: #FF5555;
         }
         
         .log-entry {
-            margin: 8px 0;
+            margin: 5px 0;
             opacity: 0;
-            animation: fadeIn 0.5s ease-in forwards;
+            animation: fadeIn 0.3s ease-in forwards;
+            font-size: 14px;
         }
         
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        
+        .critical {
+            color: #FF0000;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #FFFF00;
         }
         
         .progress {
@@ -85,7 +99,7 @@
         
         .progress-bar {
             width: 100%;
-            height: 20px;
+            height: 25px;
             background: #000055;
             border: 1px solid #FFFF55;
             position: relative;
@@ -94,47 +108,89 @@
         
         .progress-fill {
             height: 100%;
-            background: #FFFF55;
+            background: linear-gradient(90deg, #FF0000, #FFFF00);
             width: 0%;
             transition: width 0.1s linear;
+            animation: pulse-bar 0.5s infinite;
+        }
+        
+        @keyframes pulse-bar {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         .timer {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             text-align: center;
             margin: 20px 0;
-            animation: pulse 1s infinite;
+            color: #FF0000;
+            animation: pulse 0.8s infinite;
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
         }
         
         .footer {
             text-align: center;
             font-size: 14px;
             margin-top: 30px;
+            animation: blink 1s infinite;
+        }
+        
+        #black-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            animation: fadeInBlack 0.5s;
+        }
+        
+        @keyframes fadeInBlack {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .loading-dots {
+            text-align: center;
+            font-size: 20px;
+            color: #FFFF55;
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
         }
         
         #final-screen {
             display: none;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #FF1493, #FF69B4, #FFB6C1);
+            background: linear-gradient(135deg, #FF1493, #FF69B4, #FFB6C1, #FFC0CB);
             justify-content: center;
             align-items: center;
             flex-direction: column;
             text-align: center;
-            font-size: 60px;
+            font-size: 80px;
             font-weight: bold;
             color: white;
-            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            animation: rainbow 3s infinite;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            animation: rainbow-bg 2s infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000;
         }
         
-        @keyframes rainbow {
+        @keyframes rainbow-bg {
             0% { background: linear-gradient(135deg, #FF1493, #FF69B4); }
             25% { background: linear-gradient(135deg, #FF69B4, #FFB6C1); }
             50% { background: linear-gradient(135deg, #FFB6C1, #FFC0CB); }
@@ -143,31 +199,32 @@
         }
         
         .emoji {
-            font-size: 100px;
+            font-size: 120px;
             margin: 20px 0;
-            animation: bounce 1s infinite;
+            animation: bounce 0.6s infinite;
         }
         
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-30px); }
         }
         
         .restart-btn {
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 18px;
+            margin-top: 40px;
+            padding: 20px 40px;
+            font-size: 24px;
             background: white;
             color: #FF1493;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
             font-weight: bold;
             transition: transform 0.2s;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
         
         .restart-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
     </style>
 </head>
@@ -175,7 +232,7 @@
 
     <div id="bsod">
         <div class="header">
-            *** CRITICAL SYSTEM ERROR ***
+            *** CRITICAL SYSTEM ERROR - DO NOT TURN OFF COMPUTER ***
         </div>
         
         <div class="content">
@@ -186,7 +243,7 @@
             <div id="logs"></div>
             
             <div class="timer">
-                Time Remaining: <span id="countdown">05:00</span>
+                ⚠️ SYSTEM FAILURE IN: <span id="countdown">05:00</span> ⚠️
             </div>
             
             <div class="progress">
@@ -196,44 +253,57 @@
             </div>
             
             <div class="footer">
-                Press any key to continue...
+                DO NOT TURN OFF YOUR COMPUTER - SYSTEM RECOVERY IN PROGRESS
             </div>
         </div>
     </div>
 
+    <div id="black-screen"></div>
+
     <div id="final-screen">
         <div class="emoji">🤡</div>
         <div>APRIL FOOL!</div>
-        <div style="font-size: 30px; margin-top: 20px;">Aapka dost aapko ullu bana gaya!</div>
-        <button class="restart-btn" onclick="location.reload()">Play Again</button>
+        <div style="font-size: 40px; margin-top: 30px;">Aapka dost aapko ullu bana gaya!</div>
+        <button class="restart-btn" onclick="location.reload()">Play Again 😂</button>
     </div>
 
     <script>
-        // System error messages
+        // Extremely scary error messages
         const errorMessages = [
-            "Scanning system files...",
-            "Checking hard drive integrity...",
+            "Initializing system diagnostics...",
+            "Scanning hard drive sectors...",
+            "ERROR: Corrupted boot sector detected!",
             "WARNING: Unauthorized access detected!",
             "Attempting to bypass security protocols...",
             "Security bypassed successfully",
-            "Downloading malicious payload...",
+            "Downloading malicious payload from remote server...",
+            "Payload downloaded: Trojan.Win32.SystemKiller",
             "Infecting System32 directory...",
-            "Encrypting personal files...",
+            "Infecting Windows\\Drivers\\...",
+            "Encrypting all personal files...",
             "Deleting C:\\Users\\Documents\\...",
-            "Deleting C:\\Windows\\System32\\drivers\\...",
-            "Stealing browser history...",
+            "Deleting C:\\Users\\Pictures\\...",
+            "Deleting C:\\Users\\Desktop\\...",
+            "Stealing browser history and passwords...",
             "Accessing webcam...",
             "Recording audio from microphone...",
-            "Uploading data to remote server...",
+            "Uploading data to remote server: 192.168.1.105...",
             "Sending personal information to hackers...",
+            "Accessing WhatsApp backup...",
+            "Uploading private photos...",
             "WARNING: Hard drive failure imminent!",
             "Attempting emergency shutdown...",
-            "System corruption at 45%...",
-            "System corruption at 78%...",
+            "System corruption at 25%...",
+            "System corruption at 50%...",
+            "System corruption at 75%...",
             "System corruption at 95%...",
             "CRITICAL: System failure in 30 seconds...",
+            "CRITICAL: System failure in 20 seconds...",
             "CRITICAL: System failure in 10 seconds...",
-            "CRITICAL: System failure in 5 seconds..."
+            "CRITICAL: System failure in 5 seconds...",
+            "CRITICAL: System failure in 3 seconds...",
+            "CRITICAL: System failure in 2 seconds...",
+            "CRITICAL: System failure in 1 second..."
         ];
 
         const logsContainer = document.getElementById('logs');
@@ -241,15 +311,15 @@
         const countdownDisplay = document.getElementById('countdown');
         const bsod = document.getElementById('bsod');
         const finalScreen = document.getElementById('final-screen');
+        const blackScreen = document.getElementById('black-screen');
 
         let messageIndex = 0;
         let totalTime = 300; // 5 minutes in seconds
         let elapsedTime = 0;
-        let soundPlayed = false;
 
-        // Try to play error sound
-        function playErrorSound() {
-            if (!soundPlayed) {
+        // Create loud scary sounds
+        function playScarySound(frequency = 800, duration = 0.3) {
+            try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
@@ -257,17 +327,40 @@
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'square';
                 
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
                 
                 oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {}
+        }
+
+        // Play loud alarm sound
+        function playAlarmSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioContext.currentTime;
                 
-                soundPlayed = true;
-            }
+                for (let i = 0; i < 3; i++) {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 1000 + (i * 200);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.4, now + (i * 0.2));
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.2) + 0.3);
+                    
+                    oscillator.start(now + (i * 0.2));
+                    oscillator.stop(now + (i * 0.2) + 0.3);
+                }
+            } catch (e) {}
         }
 
         // Add log messages
@@ -275,14 +368,23 @@
             if (messageIndex < errorMessages.length) {
                 const logEntry = document.createElement('div');
                 logEntry.className = 'log-entry';
-                logEntry.style.animationDelay = (messageIndex * 0.3) + 's';
+                logEntry.style.animationDelay = (messageIndex * 0.2) + 's';
+                
+                if (errorMessages[messageIndex].includes('ERROR') || 
+                    errorMessages[messageIndex].includes('CRITICAL') ||
+                    errorMessages[messageIndex].includes('Deleting')) {
+                    logEntry.className += ' critical';
+                } else if (errorMessages[messageIndex].includes('WARNING')) {
+                    logEntry.className += ' warning';
+                }
+                
                 logEntry.textContent = '> ' + errorMessages[messageIndex];
                 logsContainer.appendChild(logEntry);
                 messageIndex++;
                 
-                // Play sound occasionally
-                if (messageIndex % 3 === 0) {
-                    playErrorSound();
+                // Play scary sounds at intervals
+                if (messageIndex % 4 === 0) {
+                    playScarySound(600, 0.2);
                 }
             }
         }
@@ -300,18 +402,18 @@
             progressFill.style.width = progressPercent + '%';
         }
 
-        // Try to prevent closing/escaping
+        // Prevent closing/escaping
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' || e.key === 'F12') {
                 e.preventDefault();
-                playErrorSound();
+                playScarySound(1200, 0.5);
             }
         });
 
         // Prevent right-click
         document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
-            playErrorSound();
+            playScarySound(1000, 0.3);
         });
 
         // Try to go fullscreen
@@ -319,16 +421,37 @@
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(() => {});
             }
-        }, 1000);
+        }, 500);
 
         // Main timer loop
         const mainInterval = setInterval(() => {
             elapsedTime++;
             updateCountdown();
             
-            // Add new log messages every 0.5 seconds
+            // Add new log messages
             if (elapsedTime % 1 === 0) {
                 addLog();
+            }
+            
+            // Play alarm sound at 2 minute mark
+            if (elapsedTime === 120) {
+                playAlarmSound();
+            }
+            
+            // Fake system crash at 3 minute mark
+            if (elapsedTime === 180) {
+                blackScreen.style.display = 'flex';
+                blackScreen.innerHTML = '<div class="loading-dots">SYSTEM RESTARTING...</div>';
+                playAlarmSound();
+                
+                setTimeout(() => {
+                    blackScreen.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Play another alarm at 4 minute mark
+            if (elapsedTime === 240) {
+                playAlarmSound();
             }
             
             // Check if 5 minutes have passed
@@ -338,20 +461,23 @@
                 
                 // Show final screen
                 bsod.style.display = 'none';
+                blackScreen.style.display = 'none';
                 finalScreen.style.display = 'flex';
                 
-                // Play final sound
-                playErrorSound();
+                // Play celebratory sound
+                playScarySound(400, 0.2);
+                setTimeout(() => playScarySound(600, 0.2), 300);
+                setTimeout(() => playScarySound(800, 0.2), 600);
             }
         }, 1000);
 
         // Add logs more frequently
         const logInterval = setInterval(() => {
             addLog();
-        }, 400);
+        }, 300);
 
         // Initial setup
-        playErrorSound();
+        playScarySound(800, 0.5);
         updateCountdown();
     </script>
 </body>
