@@ -3,130 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Security Alert!</title>
+    <title>CRITICAL SYSTEM ERROR</title>
     <style>
-        body {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #001a4d 0%, #003366 50%, #001a4d 100%);
+            font-family: 'Courier New', monospace;
             overflow: hidden;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+        }
+        
+        #bsod {
+            width: 100%;
+            height: 100%;
+            background: #0000AA;
+            color: #FFFF55;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 16px;
+            line-height: 1.8;
+            text-shadow: 0 0 5px rgba(255, 255, 85, 0.5);
+            animation: flicker 0.15s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+        
+        .header {
             text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 30px;
         }
-        #terminal {
-            width: 80%;
-            max-width: 800px;
-            padding: 20px;
-            border: 1px solid #0f0;
-            background: rgba(0, 20, 0, 0.9);
-            box-shadow: 0 0 20px #0f0;
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .error { color: #f00; font-weight: bold; }
-        .warning { color: #ff0; }
-        .hidden { display: none; }
-        #final-message {
-            font-size: 3rem;
-            color: #fff;
-            text-shadow: 0 0 10px #f0f, 0 0 20px #f0f;
-            animation: blink 0.5s infinite alternate;
+        
+        .error-message {
+            margin-bottom: 20px;
+            animation: typewriter 0.05s steps(1);
         }
-        @keyframes blink {
-            from { opacity: 1; }
-            to { opacity: 0.3; }
+        
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
         }
+        
+        .log-entry {
+            margin: 8px 0;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .progress {
+            margin: 20px 0;
+            background: #000055;
+            border: 2px solid #FFFF55;
+            padding: 10px;
+        }
+        
         .progress-bar {
             width: 100%;
-            background-color: #333;
-            margin: 20px 0;
-        }
-        .progress-fill {
             height: 20px;
-            background-color: #0f0;
+            background: #000055;
+            border: 1px solid #FFFF55;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #FFFF55;
             width: 0%;
-            transition: width 0.1s;
+            transition: width 0.1s linear;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        #final-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF1493, #FF69B4, #FFB6C1);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            font-size: 60px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            animation: rainbow 3s infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { background: linear-gradient(135deg, #FF1493, #FF69B4); }
+            25% { background: linear-gradient(135deg, #FF69B4, #FFB6C1); }
+            50% { background: linear-gradient(135deg, #FFB6C1, #FFC0CB); }
+            75% { background: linear-gradient(135deg, #FFC0CB, #FF1493); }
+            100% { background: linear-gradient(135deg, #FF1493, #FF69B4); }
+        }
+        
+        .emoji {
+            font-size: 100px;
+            margin: 20px 0;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .restart-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: white;
+            color: #FF1493;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
-    <div id="terminal">
-        <div id="logs"></div>
-        <div id="progress-container" class="hidden">
-            <p class="warning">DELETING SYSTEM FILES... PLEASE DO NOT TURN OFF YOUR COMPUTER</p>
-            <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
+    <div id="bsod">
+        <div class="header">
+            *** CRITICAL SYSTEM ERROR ***
         </div>
-        <div id="final-message" class="hidden">
-            🤡 APRIL FOOL! 🤡
-            <p style="font-size: 1.2rem;">Aapka dost aapko ullu bana raha hai!</p>
-            <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; background: #0f0; border: none; font-weight: bold;">Play Again</button>
+        
+        <div class="content">
+            <div class="error-message">
+                A FATAL EXCEPTION 0E HAS OCCURRED AT 0028:C0043D47
+            </div>
+            
+            <div id="logs"></div>
+            
+            <div class="timer">
+                Time Remaining: <span id="countdown">05:00</span>
+            </div>
+            
+            <div class="progress">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                Press any key to continue...
+            </div>
         </div>
     </div>
 
+    <div id="final-screen">
+        <div class="emoji">🤡</div>
+        <div>APRIL FOOL!</div>
+        <div style="font-size: 30px; margin-top: 20px;">Aapka dost aapko ullu bana gaya!</div>
+        <button class="restart-btn" onclick="location.reload()">Play Again</button>
+    </div>
+
     <script>
-        const logs = [
-            "Connecting to server...",
-            "Accessing root directory...",
-            "CRITICAL ERROR: Unauthorized access detected!",
-            "Attempting to bypass firewall...",
-            "Firewall bypassed successfully.",
-            "Downloading 'Trojan.Win32.Joke'...",
-            "Infecting System32...",
-            "Deleting C:/Users/Documents...",
-            "Deleting C:/Windows/System32/drivers...",
-            "Encrypting personal photos...",
-            "Sending data to remote server: 192.168.1.105..."
+        // System error messages
+        const errorMessages = [
+            "Scanning system files...",
+            "Checking hard drive integrity...",
+            "WARNING: Unauthorized access detected!",
+            "Attempting to bypass security protocols...",
+            "Security bypassed successfully",
+            "Downloading malicious payload...",
+            "Infecting System32 directory...",
+            "Encrypting personal files...",
+            "Deleting C:\\Users\\Documents\\...",
+            "Deleting C:\\Windows\\System32\\drivers\\...",
+            "Stealing browser history...",
+            "Accessing webcam...",
+            "Recording audio from microphone...",
+            "Uploading data to remote server...",
+            "Sending personal information to hackers...",
+            "WARNING: Hard drive failure imminent!",
+            "Attempting emergency shutdown...",
+            "System corruption at 45%...",
+            "System corruption at 78%...",
+            "System corruption at 95%...",
+            "CRITICAL: System failure in 30 seconds...",
+            "CRITICAL: System failure in 10 seconds...",
+            "CRITICAL: System failure in 5 seconds..."
         ];
 
-        const logContainer = document.getElementById('logs');
-        const progressContainer = document.getElementById('progress-container');
-        const finalMessage = document.getElementById('final-message');
-        const fill = document.getElementById('fill');
+        const logsContainer = document.getElementById('logs');
+        const progressFill = document.getElementById('progress-fill');
+        const countdownDisplay = document.getElementById('countdown');
+        const bsod = document.getElementById('bsod');
+        const finalScreen = document.getElementById('final-screen');
 
-        let index = 0;
+        let messageIndex = 0;
+        let totalTime = 300; // 5 minutes in seconds
+        let elapsedTime = 0;
+        let soundPlayed = false;
 
-        function addLog() {
-            if (index < logs.length) {
-                const p = document.createElement('p');
-                if (logs[index].includes('ERROR') || logs[index].includes('Deleting')) {
-                    p.className = 'error';
-                }
-                p.textContent = "> " + logs[index];
-                logContainer.appendChild(p);
-                index++;
-                setTimeout(addLog, 800);
-            } else {
-                startProgress();
+        // Try to play error sound
+        function playErrorSound() {
+            if (!soundPlayed) {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+                
+                soundPlayed = true;
             }
         }
 
-        function startProgress() {
-            progressContainer.classList.remove('hidden');
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    showFinal();
-                } else {
-                    width += 2;
-                    fill.style.width = width + '%';
+        // Add log messages
+        function addLog() {
+            if (messageIndex < errorMessages.length) {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.style.animationDelay = (messageIndex * 0.3) + 's';
+                logEntry.textContent = '> ' + errorMessages[messageIndex];
+                logsContainer.appendChild(logEntry);
+                messageIndex++;
+                
+                // Play sound occasionally
+                if (messageIndex % 3 === 0) {
+                    playErrorSound();
                 }
-            }, 100);
+            }
         }
 
-        function showFinal() {
-            logContainer.classList.add('hidden');
-            progressContainer.classList.add('hidden');
-            finalMessage.classList.remove('hidden');
-            document.body.style.backgroundColor = "#6200ea";
+        // Update countdown timer
+        function updateCountdown() {
+            const minutes = Math.floor((totalTime - elapsedTime) / 60);
+            const seconds = (totalTime - elapsedTime) % 60;
+            countdownDisplay.textContent = 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+            
+            // Update progress bar
+            const progressPercent = (elapsedTime / totalTime) * 100;
+            progressFill.style.width = progressPercent + '%';
         }
 
-        // Start the prank
-        setTimeout(addLog, 1000);
+        // Try to prevent closing/escaping
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.key === 'F12') {
+                e.preventDefault();
+                playErrorSound();
+            }
+        });
+
+        // Prevent right-click
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            playErrorSound();
+        });
+
+        // Try to go fullscreen
+        setTimeout(() => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        }, 1000);
+
+        // Main timer loop
+        const mainInterval = setInterval(() => {
+            elapsedTime++;
+            updateCountdown();
+            
+            // Add new log messages every 0.5 seconds
+            if (elapsedTime % 1 === 0) {
+                addLog();
+            }
+            
+            // Check if 5 minutes have passed
+            if (elapsedTime >= totalTime) {
+                clearInterval(mainInterval);
+                clearInterval(logInterval);
+                
+                // Show final screen
+                bsod.style.display = 'none';
+                finalScreen.style.display = 'flex';
+                
+                // Play final sound
+                playErrorSound();
+            }
+        }, 1000);
+
+        // Add logs more frequently
+        const logInterval = setInterval(() => {
+            addLog();
+        }, 400);
+
+        // Initial setup
+        playErrorSound();
+        updateCountdown();
     </script>
 </body>
 </html>
