@@ -431,7 +431,7 @@
         const smsContent = document.getElementById('sms-content');
 
         let messageIndex = 0;
-        let totalTime = 300; // 5 minutes in seconds
+        let totalTime = 60; // 1 minute in seconds
         let elapsedTime = 0;
         let smsIndex = 0;
 
@@ -596,24 +596,24 @@
                 addLog();
             }
             
-            // Play alarm sound at 2 minute mark
-            if (elapsedTime === 120) {
+            // Play alarm sound at 30 second mark
+            if (elapsedTime === 30) {
                 playAlarmSound();
             }
             
-            // Fake system crash at 3 minute mark
-            if (elapsedTime === 180) {
+            // Fake system crash at 40 second mark
+            if (elapsedTime === 40) {
                 blackScreen.style.display = 'flex';
                 blackScreen.innerHTML = '<div class="loading-dots">SYSTEM RESTARTING...</div>';
                 playAlarmSound();
                 
                 setTimeout(() => {
                     blackScreen.style.display = 'none';
-                }, 3000);
+                }, 2000);
             }
             
-            // Play another alarm at 4 minute mark
-            if (elapsedTime === 240) {
+            // Play another alarm at 50 second mark
+            if (elapsedTime === 50) {
                 playAlarmSound();
             }
             
