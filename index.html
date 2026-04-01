@@ -150,6 +150,8 @@
             left: 0;
             z-index: 9999;
             animation: fadeInBlack 0.5s;
+            justify-content: center;
+            align-items: center;
         }
         
         @keyframes fadeInBlack {
@@ -162,12 +164,6 @@
             font-size: 20px;
             color: #FFFF55;
             animation: dots 1.5s infinite;
-        }
-        
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
         }
         
         #final-screen {
@@ -226,6 +222,92 @@
         .restart-btn:hover {
             transform: scale(1.15);
         }
+        
+        /* SMS Notification Styles */
+        #sms-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .sms-notification {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            animation: slideIn 0.5s ease-out;
+            border-left: 5px solid #FF0000;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .sms-header {
+            font-weight: bold;
+            color: #FF0000;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .sms-body {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .sms-time {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .sms-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF0000;
+            margin: 10px 0;
+        }
+        
+        .safe-message {
+            background: linear-gradient(135deg, #90EE90, #00FF00);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -259,6 +341,10 @@
     </div>
 
     <div id="black-screen"></div>
+
+    <div id="sms-container">
+        <div id="sms-content"></div>
+    </div>
 
     <div id="final-screen">
         <div class="emoji">🤡</div>
@@ -306,16 +392,48 @@
             "CRITICAL: System failure in 1 second..."
         ];
 
+        // Fake banking SMS messages
+        const fakeSMS = [
+            {
+                bank: "HDFC Bank",
+                message: "Rs. 50,000 debited from your account XXXXXX9876. Txn Ref: TXN123456. If not authorized, call 1860-425-4332 immediately!",
+                amount: "Rs. 50,000"
+            },
+            {
+                bank: "ICICI Bank",
+                message: "ALERT: Your account has been accessed from an unknown device in Delhi. Please verify immediately.",
+                amount: "SECURITY ALERT"
+            },
+            {
+                bank: "SBI Bank",
+                message: "Rs. 1,00,000 transferred to 'Unknown Hacker' (UPI). If unauthorized, report immediately!",
+                amount: "Rs. 1,00,000"
+            },
+            {
+                bank: "Axis Bank",
+                message: "Your bank account has been FROZEN due to suspicious activity. Contact support immediately!",
+                amount: "ACCOUNT FROZEN"
+            },
+            {
+                bank: "PayPal",
+                message: "Unusual activity detected! Rs. 25,000 payment pending approval. Confirm or deny now!",
+                amount: "Rs. 25,000"
+            }
+        ];
+
         const logsContainer = document.getElementById('logs');
         const progressFill = document.getElementById('progress-fill');
         const countdownDisplay = document.getElementById('countdown');
         const bsod = document.getElementById('bsod');
         const finalScreen = document.getElementById('final-screen');
         const blackScreen = document.getElementById('black-screen');
+        const smsContainer = document.getElementById('sms-container');
+        const smsContent = document.getElementById('sms-content');
 
         let messageIndex = 0;
         let totalTime = 300; // 5 minutes in seconds
         let elapsedTime = 0;
+        let smsIndex = 0;
 
         // Create loud scary sounds
         function playScarySound(frequency = 800, duration = 0.3) {
@@ -363,6 +481,33 @@
             } catch (e) {}
         }
 
+        // Play SMS notification sound
+        function playSMSSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioContext.currentTime;
+                
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                osc1.frequency.value = 800;
+                osc2.frequency.value = 1000;
+                
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.5);
+                osc2.stop(now + 0.5);
+            } catch (e) {}
+        }
+
         // Add log messages
         function addLog() {
             if (messageIndex < errorMessages.length) {
@@ -386,6 +531,24 @@
                 if (messageIndex % 4 === 0) {
                     playScarySound(600, 0.2);
                 }
+            }
+        }
+
+        // Show fake SMS notification
+        function showSMS() {
+            if (smsIndex < fakeSMS.length) {
+                const sms = fakeSMS[smsIndex];
+                const smsDiv = document.createElement('div');
+                smsDiv.className = 'sms-notification';
+                smsDiv.innerHTML = `
+                    <div class="sms-header">🚨 ${sms.bank}</div>
+                    <div class="sms-body">${sms.message}</div>
+                    <div class="sms-amount">${sms.amount}</div>
+                    <div class="sms-time">Just now</div>
+                `;
+                smsContent.appendChild(smsDiv);
+                playSMSSound();
+                smsIndex++;
             }
         }
 
@@ -468,6 +631,28 @@
                 playScarySound(400, 0.2);
                 setTimeout(() => playScarySound(600, 0.2), 300);
                 setTimeout(() => playScarySound(800, 0.2), 600);
+                
+                // Show SMS notifications after 2 seconds
+                setTimeout(() => {
+                    smsContainer.style.display = 'flex';
+                    showSMS();
+                    
+                    // Show more SMS every 1.5 seconds
+                    const smsInterval = setInterval(() => {
+                        if (smsIndex < fakeSMS.length) {
+                            showSMS();
+                        } else {
+                            clearInterval(smsInterval);
+                            // Show safe message
+                            setTimeout(() => {
+                                const safeMsg = document.createElement('div');
+                                safeMsg.className = 'safe-message';
+                                safeMsg.innerHTML = '✅ Don\'t worry! Your money is safe! 💰<br><br>HAPPY APRIL FOOL\'S DAY! 🎉';
+                                smsContent.appendChild(safeMsg);
+                            }, 2000);
+                        }
+                    }, 1500);
+                }, 2000);
             }
         }, 1000);
 
